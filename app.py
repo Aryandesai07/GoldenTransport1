@@ -1,6 +1,6 @@
 import streamlit as st
-import os
 import subprocess
+import sys
 
 # =========================================================
 # PAGE CONFIG
@@ -24,9 +24,9 @@ html, body, [class*="css"] {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* =========================================================
+/* =====================================================
 BACKGROUND
-========================================================= */
+===================================================== */
 
 .stApp {
 
@@ -39,15 +39,17 @@ BACKGROUND
     background-attachment: fixed;
 }
 
-/* Hide Streamlit */
+/* =====================================================
+HIDE STREAMLIT DEFAULT
+===================================================== */
 
 #MainMenu {visibility:hidden;}
 footer {visibility:hidden;}
 header {visibility:hidden;}
 
-/* =========================================================
+/* =====================================================
 TOP HEADER
-========================================================= */
+===================================================== */
 
 .top-header {
 
@@ -64,6 +66,8 @@ TOP HEADER
     backdrop-filter: blur(10px);
 
     border:1px solid rgba(255,255,255,0.1);
+
+    margin-bottom:40px;
 }
 
 .logo {
@@ -79,29 +83,29 @@ TOP HEADER
     font-size:18px;
 }
 
-/* =========================================================
+/* =====================================================
 HERO SECTION
-========================================================= */
+===================================================== */
 
 .hero {
 
     text-align:center;
 
-    padding-top:100px;
-    padding-bottom:80px;
+    padding-top:80px;
+    padding-bottom:70px;
 
-    animation: fadeIn 1.3s ease-in;
+    animation: fadeIn 1.2s ease-in;
 }
 
 .hero-title {
 
     color:white;
 
-    font-size:78px;
+    font-size:82px;
 
     font-weight:900;
 
-    letter-spacing:2px;
+    line-height:1.2;
 }
 
 .hero-sub {
@@ -125,13 +129,13 @@ HERO SECTION
 
     line-height:1.8;
 
-    padding-left:150px;
-    padding-right:150px;
+    padding-left:160px;
+    padding-right:160px;
 }
 
-/* =========================================================
+/* =====================================================
 FEATURE CARDS
-========================================================= */
+===================================================== */
 
 .feature-card {
 
@@ -148,6 +152,8 @@ FEATURE CARDS
     backdrop-filter: blur(12px);
 
     transition:0.4s;
+
+    height:320px;
 }
 
 .feature-card:hover {
@@ -159,14 +165,14 @@ FEATURE CARDS
 
 .card-icon {
 
-    font-size:55px;
+    font-size:60px;
 }
 
 .card-title {
 
     color:#FFD700;
 
-    font-size:26px;
+    font-size:28px;
 
     font-weight:bold;
 
@@ -177,16 +183,16 @@ FEATURE CARDS
 
     color:white;
 
-    margin-top:15px;
+    margin-top:18px;
 
-    line-height:1.7;
+    line-height:1.8;
 
     font-size:16px;
 }
 
-/* =========================================================
+/* =====================================================
 BUTTON
-========================================================= */
+===================================================== */
 
 .stButton > button {
 
@@ -198,11 +204,11 @@ BUTTON
 
     border-radius:12px;
 
-    font-size:20px;
+    font-size:22px;
 
     font-weight:bold;
 
-    padding:15px 40px;
+    padding:16px 45px;
 
     transition:0.3s;
 
@@ -216,9 +222,9 @@ BUTTON
     transform:scale(1.03);
 }
 
-/* =========================================================
-BOTTOM TEXT
-========================================================= */
+/* =====================================================
+BOTTOM TAG
+===================================================== */
 
 .bottom-tag {
 
@@ -226,7 +232,7 @@ BOTTOM TEXT
 
     color:rgba(255,255,255,0.55);
 
-    margin-top:70px;
+    margin-top:80px;
 
     font-size:24px;
 
@@ -235,9 +241,9 @@ BOTTOM TEXT
     font-style:italic;
 }
 
-/* =========================================================
+/* =====================================================
 ANIMATION
-========================================================= */
+===================================================== */
 
 @keyframes fadeIn {
 
@@ -286,15 +292,15 @@ BROKER MANAGEMENT
 </div>
 
 <div class="hero-sub">
-Fast • Trusted • Professional Logistics Services
+Fast • Secure • Trusted Logistics Solutions
 </div>
 
 <div class="hero-desc">
 
-Golden Tamilnadu Transport is a modern lorry broker management platform
-designed for transport owners, load managers, and logistics businesses.
-Manage drivers, vehicles, transport loads, and broker operations
-with professional workflow management.
+Golden Tamilnadu Transport is a professional transport broker management platform
+designed for lorry owners, transport businesses, and logistics operators.
+Manage transport operations professionally with smart workflow management,
+driver coordination, and secure administration systems.
 
 </div>
 
@@ -302,7 +308,7 @@ with professional workflow management.
 """, unsafe_allow_html=True)
 
 # =========================================================
-# FEATURE SECTION
+# FEATURES
 # =========================================================
 
 col1, col2, col3 = st.columns(3)
@@ -321,7 +327,8 @@ with col1:
     <div class="card-text">
 
     Efficiently manage transport loads,
-    route assignments, and shipment workflows.
+    booking operations, and shipment assignments
+    with professional workflow systems.
 
     </div>
 
@@ -336,13 +343,14 @@ with col2:
     <div class="card-icon">🚛</div>
 
     <div class="card-title">
-    Lorry & Drivers
+    Driver & Lorry Control
     </div>
 
     <div class="card-text">
 
-    Smart driver allocation system with
-    professional lorry management support.
+    Manage drivers, vehicles,
+    route operations, and logistics
+    with advanced management tools.
 
     </div>
 
@@ -362,8 +370,9 @@ with col3:
 
     <div class="card-text">
 
-    Monitor transport revenue,
-    broker commissions, and logistics reports.
+    Monitor revenue, transport activities,
+    broker commissions, and business performance
+    in real time.
 
     </div>
 
@@ -382,10 +391,18 @@ with c2:
 
     if st.button("🔐 Open Admin Login"):
 
-        subprocess.Popen(["streamlit", "run", "login.py"])
+        try:
+
+            subprocess.Popen([sys.executable, "login.py"])
+
+            st.success("Login Window Opened Successfully")
+
+        except Exception as e:
+
+            st.error(f"Error Opening Login Window: {e}")
 
 # =========================================================
-# BOTTOM TAGLINE
+# FOOTER
 # =========================================================
 
 st.markdown("""
