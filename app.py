@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 # =========================================================
 
 st.set_page_config(
-    page_title="Golden Tamilnadu Transport Broker System",
+    page_title="Golden Tamilnadu Transport",
     page_icon="🚛",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -25,7 +25,9 @@ html, body, [class*="css"] {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Background */
+/* =====================================================
+BACKGROUND
+===================================================== */
 
 .stApp {
     background:
@@ -36,24 +38,29 @@ html, body, [class*="css"] {
     background-attachment: fixed;
 }
 
-/* Hide Streamlit */
+/* =====================================================
+HIDE STREAMLIT DEFAULT
+===================================================== */
 
 #MainMenu {visibility:hidden;}
 footer {visibility:hidden;}
 header {visibility:hidden;}
 
-/* Header */
+/* =====================================================
+HEADER
+===================================================== */
 
 .main-header {
-    background: rgba(0,0,0,0.55);
-    padding: 25px;
+    background: rgba(0,0,0,0.75);
+    padding: 30px;
     border-radius: 20px;
     backdrop-filter: blur(12px);
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .company-title {
-    font-size: 50px;
+    font-size: 52px;
     font-weight: 800;
     text-align: center;
     color: #FFD700;
@@ -66,21 +73,65 @@ header {visibility:hidden;}
     margin-top: 10px;
 }
 
-/* Glass Cards */
+/* =====================================================
+SIDEBAR
+===================================================== */
+
+section[data-testid="stSidebar"] {
+    background: rgba(10,10,10,0.96);
+    border-right: 2px solid #FFD700;
+}
+
+section[data-testid="stSidebar"] * {
+    color: white !important;
+    font-size: 17px !important;
+    font-weight: 500;
+}
+
+/* =====================================================
+METRIC BOXES
+===================================================== */
+
+[data-testid="metric-container"] {
+
+    background: rgba(20,20,20,0.92);
+    border: 1px solid rgba(255,215,0,0.25);
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0px 4px 18px rgba(0,0,0,0.45);
+}
+
+/* Metric title */
+
+[data-testid="metric-container"] label {
+    color: #FFD700 !important;
+    font-size: 18px !important;
+    font-weight: bold;
+}
+
+/* Metric value */
+
+[data-testid="metric-container"] div {
+    color: white !important;
+}
+
+/* =====================================================
+CARDS
+===================================================== */
 
 .glass-card {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(18,18,18,0.88);
+    border: 1px solid rgba(255,215,0,0.15);
     padding: 25px;
     border-radius: 20px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     transition: 0.4s;
     margin-bottom: 20px;
 }
 
 .glass-card:hover {
     transform: translateY(-8px);
-    background: rgba(255,215,0,0.15);
+    background: rgba(40,40,40,0.92);
 }
 
 .card-title {
@@ -93,23 +144,46 @@ header {visibility:hidden;}
     color: white;
     margin-top: 12px;
     font-size: 16px;
+    line-height: 1.7;
 }
 
-/* Sidebar */
+/* =====================================================
+TABLES
+===================================================== */
 
-section[data-testid="stSidebar"] {
-    background: rgba(0,0,0,0.80);
+[data-testid="stDataFrame"] {
+    background: rgba(20,20,20,0.90);
+    border-radius: 15px;
+    padding: 10px;
 }
 
-section[data-testid="stSidebar"] * {
-    color: white;
+/* =====================================================
+BUTTONS
+===================================================== */
+
+.stButton>button {
+    background: #FFD700;
+    color: black;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-/* Footer */
+.stButton>button:hover {
+    background: white;
+    color: black;
+    transform: scale(1.03);
+}
+
+/* =====================================================
+FOOTER
+===================================================== */
 
 .footer {
     text-align:center;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.7);
     margin-top:50px;
     font-size:18px;
 }
@@ -130,18 +204,18 @@ st.markdown("""
 
 <div class="company-sub">
 Owner: Shonandh Gounder <br>
-Smart Broker Management System for Lorry Transport & Load Handling
+Professional Broker Management System for Lorry Transport & Load Handling
 </div>
 
 </div>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# SIDEBAR MENU
+# SIDEBAR
 # =========================================================
 
 menu = st.sidebar.radio(
-    "📌 Navigation",
+    "📌 Navigation Menu",
     [
         "🏠 Home",
         "📦 Load Booking",
@@ -160,9 +234,9 @@ menu = st.sidebar.radio(
 cities = [
     "Chennai",
     "Salem",
-    "Erode",
     "Madurai",
     "Coimbatore",
+    "Erode",
     "Trichy",
     "Vellore",
     "Tirunelveli"
@@ -191,7 +265,11 @@ lorries = [
 
 if menu == "🏠 Home":
 
-    st.markdown("## 🚛 Business Overview")
+    st.markdown("""
+    <h2 style='color:white; margin-bottom:20px;'>
+    🚛 Business Overview
+    </h2>
+    """, unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -216,7 +294,7 @@ if menu == "🏠 Home":
         <div class="glass-card">
         <div class="card-title">📦 Load Management</div>
         <div class="card-text">
-        Manage transport loads from clients and assign them to lorry drivers instantly.
+        Manage client transport loads and assign them to drivers instantly.
         </div>
         </div>
         """, unsafe_allow_html=True)
@@ -226,7 +304,7 @@ if menu == "🏠 Home":
         <div class="glass-card">
         <div class="card-title">🚛 Lorry Assignment</div>
         <div class="card-text">
-        Assign available lorries and drivers for every transport order efficiently.
+        Smart lorry allocation system with live driver management.
         </div>
         </div>
         """, unsafe_allow_html=True)
@@ -236,7 +314,7 @@ if menu == "🏠 Home":
         <div class="glass-card">
         <div class="card-title">💰 Broker Earnings</div>
         <div class="card-text">
-        Track broker commission, payment collection, and transport billing reports.
+        Monitor commission, payments, and daily transport profits.
         </div>
         </div>
         """, unsafe_allow_html=True)
@@ -312,7 +390,7 @@ elif menu == "📦 Load Booking":
         """, unsafe_allow_html=True)
 
 # =========================================================
-# DRIVER & LORRY MANAGEMENT
+# DRIVER MANAGEMENT
 # =========================================================
 
 elif menu == "🚛 Driver & Lorry Management":
@@ -341,7 +419,7 @@ elif menu == "🚛 Driver & Lorry Management":
     )
 
 # =========================================================
-# LIVE LOAD TRACKING
+# LIVE TRACKING
 # =========================================================
 
 elif menu == "📍 Live Load Tracking":
@@ -370,18 +448,13 @@ elif menu == "📍 Live Load Tracking":
         use_container_width=True
     )
 
-    st.map(pd.DataFrame({
-        "lat": [13.0827, 11.0168, 9.9252, 10.7905],
-        "lon": [80.2707, 76.9558, 78.1198, 78.7047]
-    }))
-
 # =========================================================
-# BROKER PAYMENTS
+# PAYMENTS
 # =========================================================
 
 elif menu == "💰 Broker Payments":
 
-    st.markdown("## 💰 Broker Payment & Commission")
+    st.markdown("## 💰 Broker Payments")
 
     payments = []
 
@@ -398,7 +471,7 @@ elif menu == "💰 Broker Payments":
                 "National Logistics"
             ]),
             "Transport Amount": f"₹{amount}",
-            "Broker Commission": f"₹{commission}",
+            "Commission": f"₹{commission}",
             "Status": random.choice([
                 "Paid",
                 "Pending",
@@ -417,7 +490,7 @@ elif menu == "💰 Broker Payments":
 
 elif menu == "📊 Business Reports":
 
-    st.markdown("## 📊 Transport Business Reports")
+    st.markdown("## 📊 Business Reports")
 
     report_data = pd.DataFrame({
         "Day": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
@@ -440,7 +513,7 @@ elif menu == "📊 Business Reports":
 
 elif menu == "⚙️ Admin Dashboard":
 
-    st.markdown("## ⚙️ Broker Admin Dashboard")
+    st.markdown("## ⚙️ Admin Dashboard")
 
     col1, col2, col3 = st.columns(3)
 
