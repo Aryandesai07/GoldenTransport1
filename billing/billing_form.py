@@ -1,13 +1,18 @@
+import os
+import subprocess
 import sys
 import sqlite3
+import webbrowser
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QComboBox, QTableWidget, QTableWidgetItem,
     QMessageBox, QHeaderView
 )
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QTimer, QDateTime
 from datetime import datetime
+
+from whatsapp.whatsapp_menu import WhatsAppMenu
 
 class BillingForm(QMainWindow):
     def __init__(self, parent=None):
@@ -96,7 +101,23 @@ class BillingForm(QMainWindow):
 
         form_layout.addLayout(right_layout)
         main_layout.addLayout(form_layout)
-
+        #Whatsapp button in top bar
+        self.whatsapp_btn = QPushButton(" WhatsApp")
+        self.whatsapp_btn.setIcon(QIcon("whatsapp/icons/whatsapp.png"))
+        self.whatsapp_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #25D366;
+                color: white;
+                font-weight: bold;
+                padding: 8px 12px;
+                border-radius: 6px;
+            }
+            QPushButton:hover {
+                background-color: #128C7E;
+            }
+        """)
+        self.whatsapp_btn.clicked.connect(self.open_whatsapp_menu)
+        header_layout.addWidget(self.whatsapp_btn)
         # --- Ledger Table ---
         self.table = QTableWidget(0, 8)
         self.table.setHorizontalHeaderLabels([
@@ -148,6 +169,25 @@ class BillingForm(QMainWindow):
         conn.close()
         return f"INV{year}-{count:03d}"
 
+    def open_whatsapp_menu(self):
+        try:
+            # 1. Check if standalone WhatsApp.exe exists
+            exe_path = r"C:\Users\{}\AppData\Local\WhatsApp\WhatsApp.exe".format(os.getlogin())
+            if os.path.exists(exe_path):
+                subprocess.Popen([exe_path])
+                return
+
+            # 2. Try Microsoft Store version (URI scheme)
+            result = os.system("start whatsapp://")
+            if result == 0:
+                return
+
+            # 3. Fallback → WhatsApp Web
+            webbrowser.open("https://web.whatsapp.com/")
+        except Exception as e:
+            print("Error opening WhatsApp:", e)
+            # Always fallback to Web if anything fails
+            webbrowser.open("https://web.whatsapp.com/")
     # --- Save Invoice ---
     def save_invoice(self):
         # Validate required fields
@@ -169,7 +209,7 @@ class BillingForm(QMainWindow):
         if not self.due_date.text().strip():
             QMessageBox.warning(self, "Validation", "Due Date is required.")
             return
-
+        
         # Generate invoice number
         invoice_no = self.generate_invoice_no()
         customer = self.customer_name.text().strip()
@@ -209,7 +249,6 @@ class BillingForm(QMainWindow):
         self.due_date.clear()
         self.payment_status.setCurrentIndex(0)
         self.payment_mode.setCurrentIndex(0)
-
 
     # --- Load Invoices ---
     def load_invoices(self):

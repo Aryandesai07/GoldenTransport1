@@ -1,11 +1,16 @@
+import os
 import sqlite3
+import subprocess
+import webbrowser
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QTableWidget, QTableWidgetItem, QFileDialog
 )
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
 import pandas as pd
+
+from whatsapp.whatsapp_menu import WhatsAppMenu
 
 class ReportForm(QWidget):
     def __init__(self):
@@ -41,7 +46,23 @@ class ReportForm(QWidget):
         self.table = QTableWidget(0, len(self.columns))
         self.table.setHorizontalHeaderLabels(self.columns)
         layout.addWidget(self.table)
-
+        # WhatsApp button
+        self.whatsapp_btn = QPushButton(" WhatsApp")
+        self.whatsapp_btn.setIcon(QIcon("whatsapp/icons/whatsapp.png"))
+        self.whatsapp_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #25D366;
+                color: white;
+                font-weight: bold;
+                padding: 8px 12px;
+                border-radius: 6px;
+            }
+            QPushButton:hover {
+                background-color: #128C7E;
+            }
+        """)
+        self.whatsapp_btn.clicked.connect(self.open_whatsapp_menu)
+        layout.addWidget(self.whatsapp_btn, alignment=Qt.AlignRight)
         # Export buttons
         export_layout = QHBoxLayout()
         btn_csv = QPushButton("Export CSV")
@@ -56,6 +77,21 @@ class ReportForm(QWidget):
 
         self.setLayout(layout)
 
+        # in __init__ top bar
+        self.whatsapp_btn = QPushButton(" WhatsApp")
+        self.whatsapp_btn.setIcon(QIcon("whatsapp/icons/whatsapp.png"))
+        self.whatsapp_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #25D366;
+                color: white;
+                font-weight: bold;
+                padding: 8px 12px;
+                border-radius: 6px;
+            }
+            QPushButton:hover {
+                background-color: #128C7E;
+            }
+        """)
     # --- Search reports by date ---
     def search_reports(self):
         date = self.search_input.text().strip()
@@ -77,7 +113,25 @@ class ReportForm(QWidget):
                 self.table.setItem(i, j, QTableWidgetItem(str(val)))
 
         conn.close()
+    def open_whatsapp_menu(self):
+        try:
+            # 1. Check if standalone WhatsApp.exe exists
+            exe_path = r"C:\Users\{}\AppData\Local\WhatsApp\WhatsApp.exe".format(os.getlogin())
+            if os.path.exists(exe_path):
+                subprocess.Popen([exe_path])
+                return
 
+            # 2. Try Microsoft Store version (URI scheme)
+            result = os.system("start whatsapp://")
+            if result == 0:
+                return
+
+            # 3. Fallback → WhatsApp Web
+            webbrowser.open("https://web.whatsapp.com/")
+        except Exception as e:
+            print("Error opening WhatsApp:", e)
+            # Always fallback to Web if anything fails
+            webbrowser.open("https://web.whatsapp.com/")
     # --- Export to CSV ---
     def export_csv(self):
         path, _ = QFileDialog.getSaveFileName(self, "Save CSV", "reports.csv", "CSV Files (*.csv)")
