@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="GoldenTransport1", page_icon="🚚", layout="wide")
 
 st.title("Golden TamilNadu Transport")
-st.write("Shonandh Gounder")
+st.subheader("Shonandh Gounder")
 
 # Example dynamic content
 col1, col2, col3 = st.columns(3)
