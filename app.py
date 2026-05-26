@@ -3,8 +3,8 @@ import streamlit as st
 # Page setup
 st.set_page_config(page_title="GoldenTransport1", page_icon="🚚", layout="wide")
 
-st.title("Golden Transport 1")
-st.write("Welcome to GoldenTransport1 demo project!")
+st.title("Golden TamilNadu Transport")
+st.write("Shonandh Gounder")
 
 # Example dynamic content
 col1, col2, col3 = st.columns(3)
