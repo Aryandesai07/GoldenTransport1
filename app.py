@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+import subprocess
 
 # =========================================================
 # PAGE CONFIG
@@ -380,7 +382,7 @@ with c2:
 
     if st.button("🔐 Open Admin Login"):
 
-        st.switch_page("pages/login.py")
+        subprocess.Popen(["streamlit", "run", "login.py"])
 
 # =========================================================
 # BOTTOM TAGLINE
