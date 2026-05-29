@@ -1,6 +1,8 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import subprocess
 import sys
+import time
 
 # =========================================================
 # PAGE CONFIG
@@ -14,38 +16,236 @@ st.set_page_config(
 )
 
 # =========================================================
-# CUSTOM CSS
+# FULL SCREEN LOADING ANIMATION
+# =========================================================
+
+loading_html = """
+<div id="loader">
+    <div class="truck-container">
+        <div class="road"></div>
+        <div class="truck">🚛</div>
+    </div>
+
+    <div class="loading-text">
+        GOLDEN TAMILNADU TRANSPORT
+    </div>
+
+    <div class="sub-loading">
+        Smart Logistics System Initializing...
+    </div>
+</div>
+
+<style>
+
+#loader{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:black;
+    z-index:999999;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    animation:hideLoader 5s forwards;
+    animation-delay:3.8s;
+}
+
+.truck-container{
+    width:80%;
+    position:relative;
+}
+
+.road{
+    width:100%;
+    height:8px;
+    background:#FFD700;
+    border-radius:20px;
+    margin-top:40px;
+    overflow:hidden;
+}
+
+.truck{
+    font-size:90px;
+    position:absolute;
+    top:-70px;
+    left:-10%;
+    animation:moveTruck 4s linear forwards;
+}
+
+.loading-text{
+    color:#FFD700;
+    font-size:55px;
+    font-weight:900;
+    margin-top:60px;
+    letter-spacing:3px;
+
+    animation:pulse 1.5s infinite;
+}
+
+.sub-loading{
+    color:white;
+    margin-top:20px;
+    font-size:24px;
+}
+
+@keyframes moveTruck{
+    0%{
+        left:-10%;
+    }
+
+    100%{
+        left:90%;
+    }
+}
+
+@keyframes pulse{
+    0%{
+        opacity:0.4;
+    }
+
+    50%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0.4;
+    }
+}
+
+@keyframes hideLoader{
+    to{
+        opacity:0;
+        visibility:hidden;
+    }
+}
+
+</style>
+"""
+
+components.html(loading_html, height=0)
+
+# =========================================================
+# MAIN CSS
 # =========================================================
 
 st.markdown("""
 <style>
 
 html, body, [class*="css"] {
+
     font-family: 'Segoe UI', sans-serif;
+    scroll-behavior:smooth;
 }
 
 /* =====================================================
-BACKGROUND
+BACKGROUND VIDEO EFFECT
 ===================================================== */
 
 .stApp {
 
     background:
-    linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.78)),
+    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)),
     url("https://images.unsplash.com/photo-1502877338535-766e1452684a");
 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
 }
 
 /* =====================================================
-HIDE STREAMLIT DEFAULT
+HIDE STREAMLIT
 ===================================================== */
 
 #MainMenu {visibility:hidden;}
 footer {visibility:hidden;}
 header {visibility:hidden;}
+
+/* =====================================================
+FLOATING PARTICLES
+===================================================== */
+
+.particles {
+
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+    overflow:hidden;
+}
+
+.particles span {
+
+    position:absolute;
+    display:block;
+    width:6px;
+    height:6px;
+    background:#FFD700;
+    border-radius:50%;
+
+    animation:animate 15s linear infinite;
+    bottom:-150px;
+}
+
+.particles span:nth-child(1){
+left:10%;
+animation-duration:10s;
+width:4px;
+height:4px;
+}
+
+.particles span:nth-child(2){
+left:20%;
+animation-duration:12s;
+}
+
+.particles span:nth-child(3){
+left:35%;
+animation-duration:18s;
+}
+
+.particles span:nth-child(4){
+left:50%;
+animation-duration:9s;
+}
+
+.particles span:nth-child(5){
+left:65%;
+animation-duration:16s;
+}
+
+.particles span:nth-child(6){
+left:80%;
+animation-duration:11s;
+}
+
+.particles span:nth-child(7){
+left:90%;
+animation-duration:20s;
+}
+
+@keyframes animate {
+
+    0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:0;
+    }
+
+    10%{
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(-1000px) rotate(720deg);
+        opacity:0;
+    }
+}
 
 /* =====================================================
 TOP HEADER
@@ -57,30 +257,32 @@ TOP HEADER
     justify-content:space-between;
     align-items:center;
 
-    background: rgba(0,0,0,0.55);
+    padding:25px 50px;
 
-    padding:20px 40px;
+    border-radius:25px;
 
-    border-radius:20px;
+    background:rgba(0,0,0,0.45);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter:blur(12px);
 
-    border:1px solid rgba(255,255,255,0.1);
+    border:1px solid rgba(255,215,0,0.2);
 
-    margin-bottom:40px;
+    animation:slideTop 1.2s ease;
 }
 
 .logo {
 
     color:#FFD700;
-    font-size:34px;
-    font-weight:800;
+    font-size:38px;
+    font-weight:900;
+
+    text-shadow:0px 0px 15px #FFD700;
 }
 
 .owner {
 
     color:white;
-    font-size:18px;
+    font-size:20px;
 }
 
 /* =====================================================
@@ -91,46 +293,48 @@ HERO SECTION
 
     text-align:center;
 
-    padding-top:80px;
-    padding-bottom:70px;
+    padding-top:120px;
+    padding-bottom:90px;
 
-    animation: fadeIn 1.2s ease-in;
+    animation:fadeUp 1.5s ease;
 }
 
 .hero-title {
 
     color:white;
 
-    font-size:82px;
+    font-size:90px;
 
     font-weight:900;
 
-    line-height:1.2;
+    line-height:1.1;
+
+    text-shadow:0px 0px 20px rgba(255,215,0,0.4);
 }
 
 .hero-sub {
 
     color:#FFD700;
 
-    font-size:30px;
+    font-size:34px;
 
-    margin-top:25px;
+    margin-top:30px;
 
-    font-weight:600;
+    font-weight:700;
 }
 
 .hero-desc {
 
     color:#e0e0e0;
 
-    font-size:20px;
+    font-size:21px;
 
-    margin-top:25px;
+    margin-top:35px;
 
-    line-height:1.8;
+    line-height:1.9;
 
-    padding-left:160px;
-    padding-right:160px;
+    padding-left:180px;
+    padding-right:180px;
 }
 
 /* =====================================================
@@ -139,55 +343,61 @@ FEATURE CARDS
 
 .feature-card {
 
-    background: rgba(20,20,20,0.82);
+    background:rgba(20,20,20,0.72);
 
-    border:1px solid rgba(255,215,0,0.15);
+    border:1px solid rgba(255,215,0,0.2);
 
-    border-radius:22px;
+    border-radius:25px;
 
-    padding:35px;
+    padding:40px;
 
     text-align:center;
 
-    backdrop-filter: blur(12px);
+    height:340px;
 
-    transition:0.4s;
+    transition:0.5s;
 
-    height:320px;
+    backdrop-filter:blur(15px);
+
+    animation:fadeUp 2s ease;
 }
 
 .feature-card:hover {
 
-    transform:translateY(-10px);
+    transform:translateY(-15px) scale(1.03);
 
-    background: rgba(35,35,35,0.95);
+    box-shadow:0px 0px 30px rgba(255,215,0,0.4);
+
+    border:1px solid #FFD700;
 }
 
 .card-icon {
 
-    font-size:60px;
+    font-size:70px;
+
+    animation:float 3s infinite ease-in-out;
 }
 
 .card-title {
 
     color:#FFD700;
 
-    font-size:28px;
+    font-size:30px;
 
-    font-weight:bold;
+    font-weight:800;
 
-    margin-top:18px;
+    margin-top:20px;
 }
 
 .card-text {
 
     color:white;
 
-    margin-top:18px;
+    margin-top:20px;
 
-    line-height:1.8;
+    line-height:1.9;
 
-    font-size:16px;
+    font-size:17px;
 }
 
 /* =====================================================
@@ -196,69 +406,121 @@ BUTTON
 
 .stButton > button {
 
-    background:#FFD700;
+    background:linear-gradient(45deg,#FFD700,#ffae00);
 
     color:black;
 
     border:none;
 
-    border-radius:12px;
+    border-radius:15px;
 
-    font-size:22px;
+    font-size:24px;
 
-    font-weight:bold;
+    font-weight:800;
 
-    padding:16px 45px;
+    padding:18px 40px;
 
-    transition:0.3s;
+    transition:0.4s;
 
     width:100%;
+
+    box-shadow:0px 0px 20px rgba(255,215,0,0.4);
 }
 
 .stButton > button:hover {
 
+    transform:scale(1.05);
+
     background:white;
 
-    transform:scale(1.03);
+    box-shadow:0px 0px 35px rgba(255,255,255,0.6);
 }
 
 /* =====================================================
-BOTTOM TAG
+BOTTOM FOOTER
 ===================================================== */
 
 .bottom-tag {
 
     text-align:center;
 
-    color:rgba(255,255,255,0.55);
+    color:rgba(255,255,255,0.6);
 
-    margin-top:80px;
+    margin-top:100px;
+
+    margin-bottom:50px;
 
     font-size:24px;
 
-    letter-spacing:2px;
+    letter-spacing:3px;
 
-    font-style:italic;
+    animation:fadeUp 2.5s ease;
 }
 
 /* =====================================================
-ANIMATION
+ANIMATIONS
 ===================================================== */
 
-@keyframes fadeIn {
+@keyframes fadeUp {
 
-    from {
+    from{
         opacity:0;
-        transform:translateY(20px);
+        transform:translateY(40px);
     }
 
-    to {
+    to{
         opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes slideTop {
+
+    from{
+        opacity:0;
+        transform:translateY(-50px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes float {
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-12px);
+    }
+
+    100%{
         transform:translateY(0px);
     }
 }
 
 </style>
+""", unsafe_allow_html=True)
+
+# =========================================================
+# FLOATING PARTICLES
+# =========================================================
+
+st.markdown("""
+<div class="particles">
+
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+
+</div>
 """, unsafe_allow_html=True)
 
 # =========================================================
@@ -287,20 +549,20 @@ st.markdown("""
 <div class="hero">
 
 <div class="hero-title">
-SMART TRANSPORT <br>
-BROKER MANAGEMENT
+NEXT GEN <br>
+TRANSPORT MANAGEMENT
 </div>
 
 <div class="hero-sub">
-Fast • Secure • Trusted Logistics Solutions
+AI Powered • Smart Logistics • Real-Time Operations
 </div>
 
 <div class="hero-desc">
 
-Golden Tamilnadu Transport is a professional transport broker management platform
-designed for lorry owners, transport businesses, and logistics operators.
-Manage transport operations professionally with smart workflow management,
-driver coordination, and secure administration systems.
+Golden Tamilnadu Transport is an advanced transport broker management platform
+built for modern logistics businesses. Manage loads, drivers, vehicles,
+analytics, and transport operations with futuristic workflow automation
+and intelligent business management systems.
 
 </div>
 
@@ -308,7 +570,7 @@ driver coordination, and secure administration systems.
 """, unsafe_allow_html=True)
 
 # =========================================================
-# FEATURES
+# FEATURE CARDS
 # =========================================================
 
 col1, col2, col3 = st.columns(3)
@@ -321,14 +583,15 @@ with col1:
     <div class="card-icon">📦</div>
 
     <div class="card-title">
-    Load Management
+    Smart Load System
     </div>
 
     <div class="card-text">
 
-    Efficiently manage transport loads,
-    booking operations, and shipment assignments
-    with professional workflow systems.
+    AI-powered load allocation,
+    shipment management,
+    and automated workflow tracking
+    for faster transport operations.
 
     </div>
 
@@ -343,14 +606,15 @@ with col2:
     <div class="card-icon">🚛</div>
 
     <div class="card-title">
-    Driver & Lorry Control
+    Fleet Monitoring
     </div>
 
     <div class="card-text">
 
-    Manage drivers, vehicles,
-    route operations, and logistics
-    with advanced management tools.
+    Real-time lorry monitoring,
+    driver management,
+    GPS operations,
+    and logistics coordination.
 
     </div>
 
@@ -365,14 +629,15 @@ with col3:
     <div class="card-icon">📊</div>
 
     <div class="card-title">
-    Business Analytics
+    Live Business Analytics
     </div>
 
     <div class="card-text">
 
-    Monitor revenue, transport activities,
-    broker commissions, and business performance
-    in real time.
+    Track transport revenue,
+    commissions,
+    operational performance,
+    and business growth instantly.
 
     </div>
 
@@ -383,23 +648,27 @@ with col3:
 # LOGIN BUTTON
 # =========================================================
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns([1,1,1])
 
 with c2:
 
-    if st.button("🔐 Open Admin Login"):
+    if st.button("🔐 ENTER ADMIN PANEL"):
 
-        try:
+        with st.spinner("Launching Admin Panel..."):
 
-            subprocess.Popen([sys.executable, "login.py"])
+            time.sleep(1)
 
-            st.success("Login Window Opened Successfully")
+            try:
 
-        except Exception as e:
+                subprocess.Popen([sys.executable, "login.py"])
 
-            st.error(f"Error Opening Login Window: {e}")
+                st.success("Admin Login Window Opened Successfully")
+
+            except Exception as e:
+
+                st.error(f"Error Opening Login Window: {e}")
 
 # =========================================================
 # FOOTER
@@ -408,7 +677,7 @@ with c2:
 st.markdown("""
 <div class="bottom-tag">
 
-Driven by Trust • Powered by Technology
+Driven by Innovation • Powered by Intelligence
 
 </div>
 """, unsafe_allow_html=True)
