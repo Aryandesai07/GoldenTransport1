@@ -150,7 +150,7 @@ BACKGROUND VIDEO EFFECT
 
     background:
     linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)),
-    url("https://images.unsplash.com/photo-1502877338535-766e1452684a");
+    url("https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1920");
 
     background-size:cover;
     background-position:center;
